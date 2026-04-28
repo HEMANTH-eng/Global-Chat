@@ -1,1 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="48" height="48"><defs><linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8a2387"/><stop offset="50%" stop-color="#e94057"/><stop offset="100%" stop-color="#f27121"/></linearGradient><linearGradient id="grad2" x1="100%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#00c6ff"/><stop offset="100%" stop-color="#0072ff"/></linearGradient></defs><path d="M40,15 C17.9,15 0,31.1 0,51 C0,62.8 6.3,73.1 16,79.5 L12,95 L27.4,89.5 C31.4,90.8 35.6,91.5 40,91.5 C62.1,91.5 80,75.4 80,55.5 C80,35.6 62.1,15 40,15 Z" fill="url(#grad2)"/><path d="M65,40 C49.5,40 37,51.2 37,65 C37,73.2 41.4,80.4 48.2,84.9 L45.4,95.7 L56.2,91.9 C59,92.8 61.9,93.3 65,93.3 C80.5,93.3 93,82.1 93,68.3 C93,54.5 80.5,40 65,40 Z" fill="url(#grad1)" opacity="0.95"/><circle cx="65" cy="66.6" r="15" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.6"/><ellipse cx="65" cy="66.6" rx="6" ry="15" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.6"/><line x1="50" y1="66.6" x2="80" y2="66.6" stroke="#ffffff" stroke-width="2" opacity="0.6"/><circle cx="25" cy="50" r="4" fill="#ffffff"/><circle cx="40" cy="50" r="4" fill="#ffffff"/><circle cx="55" cy="50" r="4" fill="#ffffff"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="48" height="48">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8a2387"/>
+      <stop offset="50%" stop-color="#e94057"/>
+      <stop offset="100%" stop-color="#f27121"/>
+    </linearGradient>
+    <linearGradient id="grad2" x1="100%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#00c6ff"/>
+      <stop offset="100%" stop-color="#0072ff"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Cool/Blue Icon (Background) -->
+  <path d="M40,15 C17.9,15 0,31.1 0,51 C0,62.8 6.3,73.1 16,79.5 L12,95 L27.4,89.5 C31.4,90.8 35.6,91.5 40,91.5 C62.1,91.5 80,75.4 80,55.5 C80,35.6 62.1,15 40,15 Z" fill="url(#grad2)"/>
+  
+  <!-- Chat typing dots -->
+  <circle cx="25" cy="50" r="4" fill="#ffffff"/>
+  <circle cx="40" cy="50" r="4" fill="#ffffff"/>
+  <circle cx="55" cy="50" r="4" fill="#ffffff"/>
+
+  <!-- Warm/Red Icon (Scaled down by 70% and positioned bottom-right) -->
+  <g transform="translate(68, 68) scale(0.70) translate(-65, -66.6)">
+    <path d="M65,40 C49.5,40 37,51.2 37,65 C37,73.2 41.4,80.4 48.2,84.9 L45.4,95.7 L56.2,91.9 C59,92.8 61.9,93.3 65,93.3 C80.5,93.3 93,82.1 93,68.3 C93,54.5 80.5,40 65,40 Z" fill="url(#grad1)" opacity="0.95"/>
+    <circle cx="65" cy="66.6" r="15" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.6"/>
+    <ellipse cx="65" cy="66.6" rx="6" ry="15" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.6"/>
+    <line x1="50" y1="66.6" x2="80" y2="66.6" stroke="#ffffff" stroke-width="2" opacity="0.6"/>
+  </g>
+</svg>
