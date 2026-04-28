@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "node -e \"fs.copyFileSync('dist/index.html', 'dist/404.html')\" && gh-pages -d dist"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
