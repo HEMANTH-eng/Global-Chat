@@ -1,7 +1,5 @@
 ﻿import { useState } from 'react';
-import { Canvas } from '@react-three/fiber';
-import { Environment, ContactShadows } from '@react-three/drei';
-import { LiquidBlob } from './components/LiquidBlob';
+import MagicRings from './components/MagicRings';
 import { ChatRoom } from './components/ChatRoom';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -21,13 +19,23 @@ function App() {
     <div className="relative w-full h-screen overflow-hidden bg-slate-950 font-sans text-white">
       {/* 3D Background */}
       <div className="absolute inset-0 z-0 opacity-70">
-        <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
-          <ambientLight intensity={0.5} />
-          <directionalLight position={[10, 10, 10]} intensity={1.5} />
-          <Environment preset="city" />
-          <LiquidBlob />
-          <ContactShadows position={[0, -2, 0]} opacity={0.4} scale={20} blur={2} far={4} />
-        </Canvas>
+        <MagicRings
+          color="#A855F7"
+          colorTwo="#6366F1"
+          ringCount={8}
+          speed={0.8}
+          attenuation={15}
+          lineThickness={3}
+          baseRadius={0.2}
+          radiusStep={0.15}
+          scaleRate={0.2}
+          blur={2}
+          followMouse={true}
+          mouseInfluence={0.3}
+          hoverScale={1.1}
+          parallax={0.1}
+          clickBurst={true}
+        />
       </div>
 
       <main className="relative z-10 w-full h-full flex items-center justify-center p-4">

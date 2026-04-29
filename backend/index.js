@@ -47,6 +47,20 @@ io.on('connection', (socket) => {
     }
   });
 
+  socket.on('sendFile', (data) => {
+    const user = users.get(socket.id);
+    if (user) {
+      io.to(user.room).emit('message', { 
+        type: 'file', 
+        username: user.username, 
+        fileName: data.fileName,
+        fileType: data.fileType,
+        fileData: data.fileData,
+        id: Date.now() + Math.random() 
+      });
+    }
+  });
+
   socket.on('disconnect', () => {
     const user = users.get(socket.id);
     if (user) {
