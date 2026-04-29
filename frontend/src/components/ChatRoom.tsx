@@ -20,7 +20,8 @@ export function ChatRoom({ username, room = 'Global Chat', onLeave }: { username
 
   useEffect(() => {
     // Connect to backend
-    socketRef.current = io('http://localhost:3001');
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || (import.meta.env.PROD ? 'https://global-chat-backend.onrender.com' : 'http://localhost:3001');
+    socketRef.current = io(BACKEND_URL);
 
     socketRef.current.on('connect', () => {
       socketRef.current?.emit('join', { username, room });
