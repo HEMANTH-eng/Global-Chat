@@ -9,14 +9,26 @@ interface Message {
   fileName?: string;
   fileType?: string;
   fileData?: string;
+  timestamp?: string;
 }
 
 export function ChatRoom({ username, room = 'Global Chat', onLeave }: { username: string; room?: string; onLeave: () => void }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
   const [onlineCount, setOnlineCount] = useState(1);
+  const [typingUsers, setTypingUsers] = useState<Set<string>>(new Set());
   const socketRef = useRef<Socket | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Sound effect logic
+  const playNotification = () => {
+    try {
+        const audio = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA='); // Silent placeholder to avoid errors, replace with real URL
+        // In reality you would provide a small base64 mp3 string or public url here
+        audio.play().catch(e => console.log('Audio autoplay prevented'));
+    } catch(e) {}
+  };
 
   useEffect(() => {
     // Connect to backend
@@ -29,10 +41,22 @@ export function ChatRoom({ username, room = 'Global Chat', onLeave }: { username
 
     socketRef.current.on('message', (message: Message) => {
       setMessages((prev) => [...prev, message]);
+      if (message.username !== username && message.type !== 'system') {
+        playNotification();
+      }
     });
 
     socketRef.current.on('onlineUsers', (count: number) => {
       setOnlineCount(count);
+    });
+
+    socketRef.current.on('userTyping', ({ username: typingUser, isTyping }: { username: string, isTyping: boolean }) => {
+      setTypingUsers(prev => {
+        const newSet = new Set(prev);
+        if (isTyping) newSet.add(typingUser);
+        else newSet.delete(typingUser);
+        return newSet;
+      });
     });
 
     return () => {
@@ -49,6 +73,21 @@ export function ChatRoom({ username, room = 'Global Chat', onLeave }: { username
     if (inputText.trim() && socketRef.current) {
       socketRef.current.emit('sendMessage', inputText);
       setInputText('');
+      socketRef.current.emit('typing', false);
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    }
+  };
+
+  const handleTyping = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputText(e.target.value);
+    
+    if (socketRef.current) {
+        socketRef.current.emit('typing', true);
+        if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+        
+        typingTimeoutRef.current = setTimeout(() => {
+             socketRef.current?.emit('typing', false);
+        }, 1500);
     }
   };
 
@@ -88,7 +127,7 @@ export function ChatRoom({ username, room = 'Global Chat', onLeave }: { username
                 {msg.username !== username && (
                   <span className="text-xs text-violet-300 ml-1 mb-1">{msg.username}</span>
                 )}
-                <div className={`px-4 py-2 rounded-2xl ${msg.username === username ? 'bg-violet-600/80 rounded-tr-sm' : 'bg-white/10 rounded-tl-sm backdrop-blur-md'}`}>
+                <div className={`px-4 py-2 rounded-2xl relative group ${msg.username === username ? 'bg-violet-600/80 rounded-tr-sm' : 'bg-white/10 rounded-tl-sm backdrop-blur-md'}`}>
                   {msg.type === 'file' ? (
                     msg.fileType?.startsWith('image/') ? (
                       <img src={msg.fileData} alt={msg.fileName} className="max-w-full max-h-48 rounded-lg mt-1 mb-1" />
@@ -106,6 +145,11 @@ export function ChatRoom({ username, room = 'Global Chat', onLeave }: { username
                     msg.text
                   )}
                 </div>
+                {msg.timestamp && (
+                  <span className={`text-[10px] text-white/30 mt-1 mx-1 ${msg.username === username ? 'self-end' : 'self-start'}`}>
+                    {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                )}
               </div>
             )}
           </div>
@@ -155,7 +199,7 @@ export function ChatRoom({ username, room = 'Global Chat', onLeave }: { username
         <input
           type="text"
           value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
+          onChange={handleTyping}
           placeholder="Type a message..."
           className="flex-1 bg-white/5 border border-white/10 rounded-full px-4 py-2 focus:outline-none focus:border-violet-400 focus:bg-white/10 transition-colors"
         />
@@ -166,6 +210,13 @@ export function ChatRoom({ username, room = 'Global Chat', onLeave }: { username
           Send
         </button>
       </form>
+      
+      {/* Typing Indicator Overlay */}
+      {typingUsers.size > 0 && Array.from(typingUsers).filter(u => u !== username).length > 0 && (
+        <div className="absolute bottom-[80px] left-4 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full text-xs text-white/70 animate-pulse border border-white/5">
+          {Array.from(typingUsers).filter(u => u !== username).join(', ')} {Array.from(typingUsers).filter(u => u !== username).length > 1 ? 'are' : 'is'} typing...
+        </div>
+      )}
     </div>
   );
 }

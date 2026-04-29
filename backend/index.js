@@ -43,7 +43,20 @@ io.on('connection', (socket) => {
   socket.on('sendMessage', (message) => {
     const user = users.get(socket.id);
     if (user) {
-      io.to(user.room).emit('message', { type: 'user', username: user.username, text: message, id: Date.now() + Math.random() });
+      io.to(user.room).emit('message', { 
+        type: 'user', 
+        username: user.username, 
+        text: message, 
+        id: Date.now() + Math.random(),
+        timestamp: new Date().toISOString()
+      });
+    }
+  });
+
+  socket.on('typing', (isTyping) => {
+    const user = users.get(socket.id);
+    if (user) {
+      socket.to(user.room).emit('userTyping', { username: user.username, isTyping });
     }
   });
 
@@ -56,7 +69,8 @@ io.on('connection', (socket) => {
         fileName: data.fileName,
         fileType: data.fileType,
         fileData: data.fileData,
-        id: Date.now() + Math.random() 
+        id: Date.now() + Math.random(),
+        timestamp: new Date().toISOString()
       });
     }
   });
