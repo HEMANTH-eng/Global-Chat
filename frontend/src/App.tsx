@@ -1,4 +1,5 @@
 ﻿import { useState } from 'react';
+// @ts-expect-error MagicRings has no types
 import MagicRings from './components/MagicRings';
 import { ChatRoom } from './components/ChatRoom';
 import { motion, AnimatePresence } from 'framer-motion';

@@ -19,15 +19,17 @@ export function ChatRoom({ username, room = 'Global Chat', onLeave }: { username
   const [typingUsers, setTypingUsers] = useState<Set<string>>(new Set());
   const socketRef = useRef<Socket | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Sound effect logic
   const playNotification = () => {
     try {
         const audio = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA='); // Silent placeholder to avoid errors, replace with real URL
         // In reality you would provide a small base64 mp3 string or public url here
-        audio.play().catch(e => console.log('Audio autoplay prevented'));
-    } catch(e) {}
+        audio.play().catch(() => console.log('Audio autoplay prevented'));
+    } catch {
+        // Ignored
+    }
   };
 
   useEffect(() => {
@@ -57,6 +59,22 @@ export function ChatRoom({ username, room = 'Global Chat', onLeave }: { username
         else newSet.delete(typingUser);
         return newSet;
       });
+    });
+
+    socketRef.current.on('connect_error', (error: Error) => {
+      setMessages((prev) => [...prev, {
+        type: 'system',
+        text: `Connection Error: ${error.message}`,
+        id: Date.now() + Math.random()
+      }]);
+    });
+
+    socketRef.current.on('error', (error: Error) => {
+      setMessages((prev) => [...prev, {
+        type: 'system',
+        text: `Error: ${error.message}`,
+        id: Date.now() + Math.random()
+      }]);
     });
 
     return () => {
